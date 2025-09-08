@@ -14,20 +14,35 @@
 
 ## 安装方法
 
-### 方法一：自动安装（推荐）
+### 方法一：快速安装（推荐）
 
-1. 下载项目文件
-2. 打开终端，进入项目目录
-3. 运行安装脚本：
+打开终端，运行以下命令即可一键安装：
 
 ```bash
-chmod +x install.sh
-./install.sh
+curl -sSL https://raw.githubusercontent.com/KagoJoker999/yuchuli/master/quick_install.sh | bash
 ```
 
-安装完成后，在任意位置输入 `yuchuli` 即可启动程序。
+或者使用wget：
 
-### 方法二：手动安装依赖
+```bash
+wget -qO- https://raw.githubusercontent.com/KagoJoker999/yuchuli/master/quick_install.sh | bash
+```
+
+### 方法二：手动安装
+
+1. 克隆仓库：
+   ```bash
+   git clone https://github.com/KagoJoker999/yuchuli.git
+   cd yuchuli
+   ```
+
+2. 运行安装脚本：
+   ```bash
+   chmod +x install.sh
+   ./install.sh
+   ```
+
+### 方法三：手动安装依赖
 
 如果自动安装失败，可以手动安装依赖：
 
