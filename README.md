@@ -146,6 +146,24 @@ python3 yuchuli.py
    /usr/local/bin/yuchuli
    ```
 
+### 问题：安装后运行提示路径错误
+
+这是由于早期版本的安装脚本中硬编码了开发者的本地路径。我们已经修复了这个问题，请重新安装：
+
+1. 卸载旧版本：
+   ```bash
+   # 如果安装在系统目录
+   sudo rm /usr/local/bin/yuchuli
+   
+   # 如果安装在用户目录
+   rm ~/.local/bin/yuchuli
+   ```
+
+2. 重新安装：
+   ```bash
+   curl -sSL https://raw.githubusercontent.com/KagoJoker999/yuchuli/master/quick_install.sh | bash
+   ```
+
 ### 问题：权限不足
 
 **解决方法**：使用sudo权限运行安装脚本，或安装到用户目录
@@ -183,6 +201,10 @@ rm ~/.local/bin/yuchuli
 4. 文件路径是否正确
 
 ## 更新日志
+
+### v1.0.1
+- 修复启动脚本路径问题，使用动态路径而非硬编码路径
+- 优化安装脚本的PATH环境变量处理逻辑
 
 ### v1.0.0
 - 初始版本发布
