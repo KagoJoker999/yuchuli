@@ -48,9 +48,11 @@ else
         # 修改启动脚本以使用虚拟环境
         cat > "$SCRIPT_DIR/yuchuli_launcher.sh" << EOF
 #!/bin/bash
-cd "$SCRIPT_DIR"
-source "$SCRIPT_DIR/venv/bin/activate"
-python3 "$SCRIPT_DIR/yuchuli.py" "\$@"
+# 获取脚本所在目录
+SCRIPT_DIR="\$(cd "\$(dirname "\${BASH_SOURCE[0]}")" && pwd)"
+cd "\$SCRIPT_DIR"
+source "\$SCRIPT_DIR/venv/bin/activate"
+python3 "\$SCRIPT_DIR/yuchuli.py" "\$@"
 EOF
     else
         echo "❌ Python依赖安装失败"
@@ -71,8 +73,10 @@ if [ ! -f "$SCRIPT_DIR/yuchuli_launcher.sh" ]; then
     # 创建启动脚本（非虚拟环境）
     cat > "$SCRIPT_DIR/yuchuli_launcher.sh" << EOF
 #!/bin/bash
-cd "$SCRIPT_DIR"
-python3 "$SCRIPT_DIR/yuchuli.py" "\$@"
+# 获取脚本所在目录
+SCRIPT_DIR="\$(cd "\$(dirname "\${BASH_SOURCE[0]}")" && pwd)"
+cd "\$SCRIPT_DIR"
+python3 "\$SCRIPT_DIR/yuchuli.py" "\$@"
 EOF
 fi
 
