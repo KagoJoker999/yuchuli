@@ -62,6 +62,7 @@ fi
 # 创建可执行文件
 INSTALL_DIR="/usr/local/bin"
 COMMAND_NAME="yuchuli"
+USER_BIN_DIR="$HOME/.local/bin"
 
 echo "🔧 创建命令行工具..."
 
@@ -79,27 +80,47 @@ fi
 chmod +x "$SCRIPT_DIR/yuchuli_launcher.sh"
 chmod +x "$SCRIPT_DIR/yuchuli.py"
 
-# 检查是否有管理员权限
-if [ "$EUID" -eq 0 ]; then
-    # 以root权限运行，直接创建符号链接
-    ln -sf "$SCRIPT_DIR/yuchuli_launcher.sh" "$INSTALL_DIR/$COMMAND_NAME"
+# 尝试安装到系统目录
+echo "🔐 尝试安装到系统目录..."
+if sudo ln -sf "$SCRIPT_DIR/yuchuli_launcher.sh" "$INSTALL_DIR/$COMMAND_NAME" 2>/dev/null; then
     echo "✅ 命令行工具已安装到 $INSTALL_DIR/$COMMAND_NAME"
 else
-    # 非root权限，使用sudo
-    echo "🔐 需要管理员权限来安装命令行工具到系统目录..."
-    if sudo ln -sf "$SCRIPT_DIR/yuchuli_launcher.sh" "$INSTALL_DIR/$COMMAND_NAME"; then
-        echo "✅ 命令行工具已安装到 $INSTALL_DIR/$COMMAND_NAME"
-    else
-        echo "⚠️  无法安装到系统目录，将安装到用户目录..."
+    echo "⚠️  无法安装到系统目录，将安装到用户目录..."
+    
+    # 创建用户本地bin目录
+    mkdir -p "$USER_BIN_DIR"
+    ln -sf "$SCRIPT_DIR/yuchuli_launcher.sh" "$USER_BIN_DIR/$COMMAND_NAME"
+    
+    echo "✅ 命令行工具已安装到 $USER_BIN_DIR/$COMMAND_NAME"
+    
+    # 检查并更新PATH环境变量
+    if [[ ":$PATH:" != *":$USER_BIN_DIR:"* ]]; then
+        echo "📝 正在更新PATH环境变量..."
         
-        # 创建用户本地bin目录
-        mkdir -p "$HOME/.local/bin"
-        ln -sf "$SCRIPT_DIR/yuchuli_launcher.sh" "$HOME/.local/bin/$COMMAND_NAME"
+        # 检查shell类型并更新相应的配置文件
+        if [[ "$SHELL" == *"zsh"* ]]; then
+            # 对于zsh，更新.zshrc
+            if ! grep -q "export PATH=\"\$HOME/.local/bin:\$PATH\"" ~/.zshrc 2>/dev/null; then
+                echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+                echo "✅ 已更新 ~/.zshrc 文件"
+            fi
+        elif [[ "$SHELL" == *"bash"* ]]; then
+            # 对于bash，更新.bashrc
+            if ! grep -q "export PATH=\"\$HOME/.local/bin:\$PATH\"" ~/.bashrc 2>/dev/null; then
+                echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+                echo "✅ 已更新 ~/.bashrc 文件"
+            fi
+        else
+            # 默认更新.zshrc
+            if ! grep -q "export PATH=\"\$HOME/.local/bin:\$PATH\"" ~/.zshrc 2>/dev/null; then
+                echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc
+                echo "✅ 已更新 ~/.zshrc 文件"
+            fi
+        fi
         
-        echo "✅ 命令行工具已安装到 $HOME/.local/bin/$COMMAND_NAME"
-        echo "📝 请确保 $HOME/.local/bin 在您的PATH环境变量中"
-        echo "   您可以将以下行添加到 ~/.bashrc 或 ~/.zshrc 文件中："
-        echo "   export PATH=\"\$HOME/.local/bin:\$PATH\""
+        echo "📝 注意：请重新打开终端或运行以下命令来应用PATH更改："
+        echo "   source ~/.zshrc  # 如果使用zsh"
+        echo "   source ~/.bashrc # 如果使用bash"
     fi
 fi
 
@@ -116,9 +137,9 @@ echo "  • 自动计算成本价和基本售价"
 echo "  • 生成标准格式的新Excel文件"
 echo ""
 echo "如需卸载，请运行："
-echo "  sudo rm $INSTALL_DIR/$COMMAND_NAME"
+echo "  sudo rm $INSTALL_DIR/$COMMAND_NAME  # 如果安装在系统目录"
 echo "  或"
-echo "  rm $HOME/.local/bin/$COMMAND_NAME"
+echo "  rm $USER_BIN_DIR/$COMMAND_NAME      # 如果安装在用户目录"
 echo ""
 
 # 验证安装
@@ -126,4 +147,6 @@ if command -v $COMMAND_NAME &> /dev/null; then
     echo "✅ 安装验证成功！现在可以使用 '$COMMAND_NAME' 命令"
 else
     echo "⚠️  安装验证失败，请检查PATH环境变量"
+    echo "   您可以手动运行以下命令来启动程序："
+    echo "   $SCRIPT_DIR/yuchuli_launcher.sh"
 fi
