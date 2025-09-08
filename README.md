@@ -97,6 +97,73 @@ python3 yuchuli.py
 - Python 3.6 或更高版本
 - pip3 包管理器
 
+## 常见问题解决
+
+### 问题：zsh: command not found: yuchuli
+
+这是最常见的问题，通常是由于PATH环境变量未正确配置导致的。请按以下步骤解决：
+
+1. **重新打开终端**：
+   关闭当前终端窗口，重新打开一个新的终端窗口，然后再次尝试运行[yuchuli](file:///Users/majingkai/Downloads/Demo/待上架预处理/yuchuli.py#L0-L285)命令。
+
+2. **手动激活PATH**：
+   如果重新打开终端无效，请运行以下命令：
+   ```bash
+   # 对于zsh用户（macOS默认）
+   source ~/.zshrc
+   
+   # 对于bash用户
+   source ~/.bashrc
+   ```
+
+3. **检查安装位置**：
+   运行以下命令检查[yuchuli](file:///Users/majingkai/Downloads/Demo/待上架预处理/yuchuli.py#L0-L285)命令是否已正确安装：
+   ```bash
+   # 检查系统目录
+   ls -la /usr/local/bin/yuchuli
+   
+   # 检查用户目录
+   ls -la ~/.local/bin/yuchuli
+   ```
+
+4. **手动添加到PATH**：
+   如果[yuchuli](file:///Users/majingkai/Downloads/Demo/待上架预处理/yuchuli.py#L0-L285)命令安装在`~/.local/bin`目录，请手动将该目录添加到PATH：
+   ```bash
+   # 临时添加（仅当前会话有效）
+   export PATH="$HOME/.local/bin:$PATH"
+   
+   # 永久添加（需要根据您的shell选择）
+   echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc  # 对于zsh
+   echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc # 对于bash
+   ```
+
+5. **直接运行程序**：
+   如果以上方法都无效，您可以直接运行程序：
+   ```bash
+   # 进入安装目录后运行
+   ~/.local/bin/yuchuli
+   # 或者
+   /usr/local/bin/yuchuli
+   ```
+
+### 问题：权限不足
+
+**解决方法**：使用sudo权限运行安装脚本，或安装到用户目录
+
+### 问题：Python依赖安装失败
+
+**解决方法**：手动安装依赖包：
+```bash
+pip3 install pandas openpyxl colorama xlrd
+```
+
+### 问题：无法读取Excel文件
+
+**解决方法**：
+1. 确保文件格式为.xlsx或.xls
+2. 确保文件没有被其他程序占用
+3. 检查文件路径是否正确
+
 ## 卸载方法
 
 ```bash
@@ -106,26 +173,6 @@ sudo rm /usr/local/bin/yuchuli
 # 如果安装在用户目录
 rm ~/.local/bin/yuchuli
 ```
-
-## 故障排除
-
-### 问题：命令找不到
-**解决方法**：检查PATH环境变量，确保安装目录在PATH中
-
-### 问题：权限不足
-**解决方法**：使用sudo权限运行安装脚本，或安装到用户目录
-
-### 问题：Python依赖安装失败
-**解决方法**：手动安装依赖包：
-```bash
-pip3 install pandas openpyxl colorama xlrd
-```
-
-### 问题：无法读取Excel文件
-**解决方法**：
-1. 确保文件格式为.xlsx或.xls
-2. 确保文件没有被其他程序占用
-3. 检查文件路径是否正确
 
 ## 技术支持
 
